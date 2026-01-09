@@ -18,7 +18,13 @@ const mouse = { x: 0, y: 0 };
 window.addEventListener("mousemove", (e) => {
   mouse.x = e.x;
   mouse.y = e.y;
+
+  if (isHolding && singularity) {
+    singularity.x = mouse.x;
+    singularity.y = mouse.y;
+  }
 });
+
 
 window.addEventListener("mousedown", (e) => {
   isHolding = true;
@@ -49,14 +55,14 @@ class Particle {
     if (isHolding && singularity && !this.locked) {
       const dx = singularity.x - this.x;
       const dy = singularity.y - this.y;
-      const dist = Math.sqrt(dx * dx + dy * dy) + 0.1;
+      const dist = Math.sqrt(dx * dx + dy * dy) + .5;
 
-      const force = 0.8 / (dist * dist);
+      const force = 25 / (dist * dist);
       this.vx += dx * force;
       this.vy += dy * force;
 
       // Lock into singularity
-      if (dist < 1.5) {
+      if (dist < 25) {
         this.x = singularity.x;
         this.y = singularity.y;
         this.vx = 0;
@@ -66,8 +72,8 @@ class Particle {
     }
 
     // Friction
-    this.vx *= 0.985;
-    this.vy *= 0.985;
+    this.vx *= .985;
+    this.vy *= .985;
 
     this.x += this.vx;
     this.y += this.vy;
